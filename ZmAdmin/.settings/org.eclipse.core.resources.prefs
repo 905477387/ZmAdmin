@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 encoding//WebContent/WEB-INF/view=UTF-8
 encoding//WebContent/WEB-INF/view/modules/platform/iccard/iccard.html=UTF-8
+encoding//src/config.properties=UTF-8
 encoding/<project>=UTF-8
 encoding/WebContent=UTF-8
 encoding/src=UTF-8
