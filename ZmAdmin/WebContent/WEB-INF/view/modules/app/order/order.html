@@ -15,34 +15,36 @@
 	
 	function initGrid(){
 		var grid_url = "${ctxPath}/${code}/list";
-		var _colnames = ["ä¸»é”®",
-                        "è®¢å•ç¼–å·",
-                        "å……å€¼æ²¹å¡",
-						"å……å€¼æ•°é‡", 
-						"è®¢å•é‡‘é¢",
-						"é¡¾å®¢å¡å·", 
-						"é¡¾å®¢å§“å", 
-						"é¡¾å®¢æ‰‹æœº",
-						"æ ¸é”€æ—¶é—´",
-                        "è®¢å•çŠ¶æ€",
-                        "è®¢å•åˆ›å»ºæ—¶é—´",
-                        "ä»˜æ¬¾æ–¹å¼",
-                        "æ ¸é”€äººå‘˜",
-                        "æ ¸é”€ç«™ç‚¹"];
+		var _colnames = ["Ö÷¼ü",
+                        "¶©µ¥±àºÅ",
+                        "³äÖµÓÍ¿¨",
+						"³äÖµÊıÁ¿", 
+						"¶©µ¥½ğ¶î",
+						"¿Í»§Ãû³Æ",
+						"¹Ë¿Í¿¨ºÅ", 
+						"¹Ë¿ÍĞÕÃû", 
+						"¹Ë¿ÍÊÖ»ú",
+						"ºËÏúÊ±¼ä",
+                        "¶©µ¥×´Ì¬",
+                        "¶©µ¥´´½¨Ê±¼ä",
+                        "¸¶¿î·½Ê½",
+                        "ºËÏúÈËÔ±",
+                        "ºËÏúÕ¾µã"];
 		var _colmodel = [{name:"id", index:"id", width:100,hidden:true},
                         {name:"order_no", index:"order_no", width:120},
 						{name:"card_name", index:"card_id", width:100},
 						{name:"charge_number", index:"charge_number", width:65,align:"right"},
 						{name:"order_price", index:"order_price", width:65,align:"right"},
+						{name:"custname",index:"custname",width:100},
 						{name:"customer_card_no", index:"customer_card_no", width:150},
 						{name:"customer_name", index:"customer_name", width:65},
 						{name:"customer_phone", index:"customer_phone", width:100},
 						{name:"charge_time", index:"charge_time", width:100},
                         {name:"status_name", index:"status", align:"center", width:100, formatter:statusShow},
 						{name:"create_time", index:"create_time", width:100},
-                        {name:"pay_type", index:"pay_type", width:100},
+                        {name:"pay_typeName", index:"pay_type", width:100},
                         {name:"charger_name", index:"charger", width:100},
-                        {name:"charger_station", index:"charger", width:100}];
+                        {name:"charger_station", index:"charger", width:100}]; 
 		
 		jQuery(grid_selector).jqGrid({
 			url : grid_url,
@@ -51,10 +53,37 @@
 			colModel : _colmodel, 
 			jsonReader : {id :"id"},
 			pager : pager_selector,
-			postData : {sort : "create_time ", order : "desc"}
+			postData : {sort : "create_time ", order : "desc"},
+			 loadComplete: function (res) {
+				 var table = this;
+	                $jqGrid = $(grid_selector);
+	                setTimeout(function () {
+	                    updatePagerIcons(table);
+	                    //×ÔÊÊÓ¦±í¸ñ¸ß¶È -- ±í¸ñ³õÊ¼»¯ºóµ÷ÓÃ
+	                    autoResize(grid_selector, 240);
+	                }, 0);
+
+	                //grid¼ÓÔØÍê±Ï£¬´ÓÊı×éÖĞÑ¡ÖĞ¶ÔÓ¦µÄ¼ÇÂ¼
+	                if (item_selected.length > 0) {
+	                    for (var i = 0; i < item_selected.length; i++) {
+	                        jQuery(grid_selector).jqGrid('setSelection', item_selected[i]);
+	                    }
+	                }
+
+	                var records = res.records;
+	                var tra = 0;
+	                if (res.ext.tra != undefined) {
+	                    tra = res.ext.tra.toFixed(3);
+	                }
+
+	                var html = "<div dir=\"ltr\" style=\"text-align:left\" class=\"ui-paging-info\">¹² "+records+" Ìõ, ¼ÓÓÍÁ¿×Ü¼Æ <span style='color: red;'></span>, ¼ÓÓÍ½ğ¶î×Ü¼Æ <span style='color: red;'>"+tra+" </span>Ôª </div>";
+
+	                $("#grid-pager_left").html(html);
+
+	            }
 		});
 	}
-
+	
     function statusShow(cellvalue, options, rowObject) {
         var lx = rowObject.status;
         var sclass = "";
@@ -72,35 +101,38 @@
         var html = "<span class='" + sclass + "'>" + rowObject.status_name + "</span>";
         return html;
     }
-</script>
+ </script>
 
 
-	<!-- é…ç½® grid -->
+	<!-- ÅäÖÃ grid -->
 	<div class="row">
 		<div class="col-xs-12 tb-grid">
-			<!-- é…ç½® æŸ¥è¯¢ -->
+			<!-- ÅäÖÃ ²éÑ¯ -->
 			@ var _col=[
-            @		{name:"åˆ›å»ºè®¢å•æ—¶é—´", index:"create_time_gt", type:"date"},
-            @		{name:"è‡³", index:"create_time_lt", type:"date"},
-            @		{name:"è®¢å•ç¼–å·", index:"order_no", type:"text"},
-            @		{name:"é¡¾å®¢å¡å·", index:"customer_card_no", type:"text"},
-            @		{name:"æ ¸é”€æ—¶é—´", index:"charge_time_gt", type:"date"},
-            @		{name:"è‡³", index:"charge_time_lt", type:"date"},
-			@		{name:"é¡¾å®¢å§“å", index:"customer_name", type:"text"},
-			@		{name:"é¡¾å®¢æ‰‹æœº", index:"customer_phone", type:"text"},
-            @		{name:"è®¢å•çŠ¶æ€", index:"status", type:"select_909"}
+            @		{name:"´´½¨¶©µ¥Ê±¼ä", index:"create_time_gt", type:"date"},
+            @		{name:"ÖÁ", index:"create_time_lt", type:"date"},
+            @		{name:"¶©µ¥±àºÅ", index:"order_no", type:"text"},
+            @		{name:"¿Í»§Ãû³Æ", index:"custname",type:"text"},
+            @		{name:"¹Ë¿Í¿¨ºÅ", index:"customer_card_no", type:"text"},
+            @		{name:"ºËÏúÊ±¼ä", index:"charge_time_gt", type:"date"},
+            @		{name:"ÖÁ", index:"charge_time_lt", type:"date"},
+			@		{name:"¹Ë¿ÍĞÕÃû", index:"customer_name", type:"text"},
+			@		{name:"¹Ë¿ÍÊÖ»ú", index:"customer_phone", type:"text"},
+		    @		{name:"¸¶¿î·½Ê½", index:"pay_type",type:"select_910"},
+            @		{name:"¶©µ¥×´Ì¬", index:"status", type:"select_909"}
 			@];
 			@ include("/common/_function/_search_multi.html",{"col":_col}){}
-			<!-- æŒ‰é’® -->
+			<!-- °´Å¥ -->
 			<div class="welljq well-sm" id="btns"></div>
 			<!-- grid -->
 			<table id="grid-table"></table>
-			<!-- åˆ†é¡µ-->
+			<!-- ·ÖÒ³-->
 			<div id="grid-pager"></div>
+			<!-- ËÑË÷ºóÏÔÊ¾½ğ¶î -->
 		</div>
 	</div>
 	
-	<!-- å¼•å…¥æ‰€éœ€çš„js -->
+	<!-- ÒıÈëËùĞèµÄjs -->
 	@include("/common/_listscript.html", {isExport : true}) {}
 	
 @}	
