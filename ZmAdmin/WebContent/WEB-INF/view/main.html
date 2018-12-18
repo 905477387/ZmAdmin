@@ -1,0 +1,223 @@
+@layout("/common/_container.html"){
+
+		<div class="row" style="padding:10px 16px 10px 16px;">
+			<div class="col-xs-12">
+				<!-- PAGE CONTENT BEGINS -->
+				<!--<div class="alert alert-block alert-info">
+					<button type="button" class="close" data-dismiss="alert">
+						<i class="ace-icon fa fa-times"></i>
+					</button>
+
+					<i class="ace-icon fa fa-check "></i>
+					欢迎使用
+					<strong class="info">
+                        中民能源后台管理系统
+						<small>(v1.0)</small>
+					</strong>
+				</div>-->
+
+                <div class="page-header-form">
+                    <h2>
+                        站点信息总览
+                    </h2>
+
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="widget-box transparent">
+                        <div class="widget-header widget-header-flat">
+                            <h4 class="widget-title lighter">
+                                <i class="ace-icon fa fa-car orange"></i>
+                                车辆数量
+                            </h4>
+                        </div>
+
+                        <div class="widget-body">
+                            <div class="widget-main no-padding">
+                                <table class="table table-bordered table-striped">
+                                    <thead class="thin-border-bottom">
+                                    <tr>
+                                        <th>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>站点名称
+                                        </th>
+                                        <th>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>车辆数量
+                                        </th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td style="width: 50%; background-color: #4383B4;"><span style="color: white;font-weight: bold">${station_name!}</span></td>
+                                        <td style="width: 50%; background-color: #4383B4;">
+                                            <span class="red"><a href="javascript:viewCar()"><span style="color: white;">${car_cnt!0}</span></a></span>
+                                            <span style="color: white;">(辆)</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div><!-- /.widget-main -->
+                        </div><!-- /.widget-body -->
+                    </div><!-- /.widget-box -->
+                </div><!-- /.col -->
+
+                <div class="col-xs-12">
+                    <div class="widget-box transparent">
+                        <div class="widget-header widget-header-flat">
+                            <h4 class="widget-title lighter">
+                                <i class="ace-icon fa fa-cny orange"></i>
+                                今日油价
+                            </h4>
+                        </div>
+
+                        <div class="widget-body">
+                            <div class="widget-main no-padding">
+                                <table class="table table-bordered table-striped">
+                                    <thead class="thin-border-bottom">
+                                    <tr>
+                                        <th>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>油类
+                                        </th>
+                                        <th>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>价格
+                                        </th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <!--<tr>
+                                            <td style="width: 50%;">柴油</td>
+                                            <td style="width: 50%;">
+                                                <span class="red">${oilPrice.DieselOil!'暂无'}</span>
+                                                (元/升)
+                                            </td>
+                                        </tr>-->
+                                        <tr>
+                                            <td style="width: 50%;">95号汽油</td>
+                                            <td style="width: 50%;">
+                                                <span class="red">${oilPrice.GasOil95!'暂无'}</span>
+                                                (元/升)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 50%;">92号汽油</td>
+                                            <td style="width: 50%;">
+                                                <span class="red">${oilPrice.GasOil92!'暂无'}</span>
+                                                (元/升)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 50%;">0号柴油</td>
+                                            <td style="width: 50%;">
+                                                <span class="red">${oilPrice.GasOil0!'暂无'}</span>
+                                                (元/升)
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div><!-- /.widget-main -->
+                        </div><!-- /.widget-body -->
+                    </div><!-- /.widget-box -->
+                </div><!-- /.col -->
+
+
+
+                <div class="col-xs-12">
+                    <div class="widget-box transparent">
+                        <div class="widget-header widget-header-flat">
+                            <h4 class="widget-title lighter">
+                                <i class="ace-icon fa fa-newspaper-o orange"></i>
+                                最新资讯
+                            </h4>
+                            <div class="widget-toolbar">
+                                <a href="javascript:viewNotice()" data-action="collapse">
+                                    <i class="ace-icon fa fa-chevron-right"></i>
+                                    更多
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="widget-body">
+                            <div class="widget-main no-padding">
+                                <table class="table table-bordered table-striped">
+                                    <thead class="thin-border-bottom">
+                                    <tr>
+                                        <th>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>资讯标题
+                                        </th>
+
+                                        <th>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>资讯类型
+                                        </th>
+
+                                        <th class="hidden-480">
+                                            <i class="ace-icon fa fa-caret-right blue"></i>资讯时间
+                                        </th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                        @ for (x in news) {
+                                            <tr>
+                                                <td style="width: 50%;"><a href="javascript:view(${x.id!})">${x.title!}</a></td>
+
+                                                <td style="width: 20%;">
+                                                    ${x.typename!}
+                                                </td>
+
+                                                <td style="width: 30%;">
+                                                    ${func.formatTime(x.publishtime,"yyyy年MM月dd日")}
+                                                </td>
+                                            </tr>
+                                        @ }
+
+                                    </tbody>
+                                </table>
+                            </div><!-- /.widget-main -->
+                        </div><!-- /.widget-body -->
+                    </div><!-- /.widget-box -->
+                </div><!-- /.col -->
+
+
+
+            </div>
+	  </div>
+	  <script>
+
+          function view(newsId) {
+              window.top.addTabs({
+                  id: "btn_notice_view_" + newsId,
+                  title: "最新资讯查看",
+                  url: "${ctxPath}/notice/view/" + newsId,
+                  icon: "fa fa-eye",
+                  close: true
+              });
+          }
+
+          function viewCar() {
+              window.top.addTabs({
+                  id: "btn_iccardext_view",
+                  title: "IC卡档案查询",
+                  url: "${ctxPath}/iccardext/",
+                  icon: "fa fa-eye",
+                  close: true
+              });
+          }
+
+          function viewNotice() {
+              window.top.addTabs({
+                  id: "btn_notice",
+                  title: "最新资讯查询",
+                  url: "${ctxPath}/notice/",
+                  icon: "fa fa-eye",
+                  close: true
+              });
+          }
+
+          function reloadPage() {
+              window.location.reload()
+          }
+
+      </script>
+@}	

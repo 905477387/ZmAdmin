@@ -1,0 +1,237 @@
+@layout("/common/_container.html"){
+
+
+<script type="text/javascript">
+
+	@ var key = (func.like(type,"dict_"))?"num":"id";
+	@ key = ((isEmpty(treeId) || treeId == "0") ? key : treeId);
+
+	var zmap = new Map();
+	
+	$(function(){
+		var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+		$("#btn_close").bind("click",function(){
+			parent.layer.close(index);
+		});
+		$("#btn_save").bind("click",function(){
+			
+			var _pobj = parent.$("#${index!}").attr("name");
+			if (_pobj != undefined){
+				var _name = _pobj.replace("token_", "");
+				parent.$("#${index!}").attr("name", _name);
+				parent.$("#form_token").val(1);
+			}
+			
+			var ids = new StringBuilder();
+			var names = new StringBuilder();
+			var zkeys = zmap.keys();
+			for ( var i = 0; i < zkeys.length; i++) {
+				var map = zmap.get(zkeys[i]);
+				ids.append(map.key);
+				names.append(map.value);
+			}
+			
+			
+			parent.$("#${index!}_INPUT").val(names.join(","));
+			parent.$("#${index!}").val(ids.join(","));
+			parent.layer.close(index);
+		
+		});
+		
+		initZtree();
+	});
+	
+	var setting = {
+			check: {
+				enable: true,
+				@ if(check! == "radio"){
+					chkStyle: "radio",
+					radioType : "all"
+				@ } else{
+					chkboxType :{ "Y" : "", "N" : "ps" }
+				@ }
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				beforeClick: beforeClick,
+				onCheck: onCheck
+			}
+		};
+	
+	function beforeClick(treeId, treeNode) {
+		var zTree = $.fn.zTree.getZTreeObj("zTree");
+		zTree.checkNode(treeNode, !treeNode.checked, null, true);
+		return false;
+	}
+	
+	function onCheck(e, treeId, treeNode) {
+		if(treeNode.checked) {
+			if(treeNode.real == "true" || treeNode.real == undefined) {
+				var map = {
+					key : treeNode.${key},
+					value : treeNode.name
+				}
+				zmap.put(treeNode.id, map);
+				var html = " <div id=\"dv_"+treeNode.id+"\"><span class=\"label label-white middle\" style=\"cursor:pointer;\" onclick=\"removeNode('"+treeNode.id+"')\">"+treeNode.name+"</span></br></div>";
+				$("#div_result").append(html);
+			} else {
+				var zTree = $.fn.zTree.getZTreeObj("zTree");
+				treeNode.checked = false; 
+				zTree.updateNode(treeNode);
+			}
+		} else {
+			zmap.remove(treeNode.id);
+			$("#dv_" + treeNode.id).remove();
+		}
+	}
+	
+	function removeNode(id) {
+		zmap.remove(id);
+		$("#dv_" + id).remove();
+		
+		var zTree = $.fn.zTree.getZTreeObj("zTree");
+		var node = zTree.getNodeByParam("id",id);
+		if (node == null) return false;
+		node.checked = false; 
+		zTree.updateNode(node);
+	}
+	
+	function initNodes() {
+		var zTree = $.fn.zTree.getZTreeObj("zTree"),
+		nodes = zTree.getCheckedNodes(true);
+		
+		for (var i = 0, l = nodes.length; i < l; i++) {
+			var map = {
+				key : nodes[i].${key},
+				value : nodes[i].name
+			}
+			zmap.put(nodes[i].id, map);
+		}
+		
+		var sb = new StringBuilder();
+		var zkeys = zmap.keys();
+		for (var i = 0; i < zkeys.length; i++) {
+			var map = zmap.get(zkeys[i]);
+			sb.append(" <div id=\"dv_"+zkeys[i]+"\"><span class=\"label label-white middle\" style=\"cursor:pointer;\" onclick=\"removeNode('"+zkeys[i]+"')\">"+map.value+"</span></br></div>");
+		}
+		
+		$("#div_result").html(sb.toString());
+	}
+	
+	function initZtree(){
+		var appindex = appLoading();
+		var ajax = new Ajax("${ctxPath}/ztree/getTreeList", function(data){
+			if(data.code===0){
+				$.fn.zTree.init($("#zTree"), setting, data.data);
+				initNodes();
+				clearLoading(appindex);
+			}
+			else{
+				layer_alert("数据加载失败", "error");
+			}
+		});
+		ajax.set("source", "${source!}");
+		ajax.set("type", "${type!}");
+		ajax.set("where", "${where!}");
+		ajax.set("intercept", "${intercept!}");
+		ajax.set("treeId", "${treeId!}");
+		ajax.set("ext", "${ext!}");
+		ajax.set("val", "${val!}");
+		ajax.start();
+	}
+	
+	function search() {
+		var search = $("#ipt_search").val();
+		var appindex = appLoading();
+		var ajax = new Ajax("${ctxPath}/ztree/getTreeList", function(data){
+			if(data.code===0){
+				$.fn.zTree.init($("#zTree"), setting, data.data);
+				
+				var zTree = $.fn.zTree.getZTreeObj("zTree");
+				var zkeys = zmap.keys();
+				for (var i = 0; i < zkeys.length; i++) {
+					var key = zkeys[i];
+					var node = zTree.getNodeByParam("id",key);
+					node.checked = true; 
+					zTree.updateNode(node);
+				}
+				
+				clearLoading(appindex);
+			}
+			else{
+				layer_alert("数据加载失败", "error");
+			}
+		});
+		ajax.set("source", "${source!}");
+		ajax.set("type", "${type!}");
+		ajax.set("where", "${where!}");
+		ajax.set("intercept", "${intercept!}");
+		ajax.set("treeId", "${treeId!}");
+		ajax.set("ext", "${ext!}");
+		ajax.set("val", "${val!}");
+		ajax.set("search", search);
+		ajax.start();
+	
+	}
+	
+	
+</script>
+
+
+	<!-- 配置grid -->
+	<div class="row">
+		<div class="col-xs-6">
+			<div class="widget-box widget-color-blade">
+				<div class="widget-header">
+					<h4 class="widget-title lighter smaller">${name!}</h4>
+				</div>
+				<div style="padding-top:8px;padding-left:8px;">
+					<input id="ipt_search" placeholder="请输入关键字查询" /> <button type="button" class="btn btn-white btn-sm" onclick="search()">查 询</button>
+				</div>
+				<div class="widget-body" style="max-height:${zheight!255}px;overflow-y:auto">
+					<div class="widget-main padding-8">
+						<ul id="zTree" class="ztree"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-6">
+			<div class="widget-box widget-color-blade">
+				<div class="widget-header">
+					<h4 class="widget-title lighter smaller">选择结果</h4>
+				</div>
+
+				<div class="widget-body" style="max-height:${xheight!290}px;overflow-y:auto">
+					<div id="div_result" class="widget-main padding-8">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="clearfix form-actions center" style="margin-top:5px;margin-bottom:0px;">
+		<div class="col-md-offset-1 col-md-10">
+		  	<button class="btn btn-sm btn-info" type="button" id="btn_save">
+				<i class="ace-icon fa fa-check bigger-110"></i>
+				确定
+			</button>
+
+			&nbsp; &nbsp; &nbsp;
+			<button class="btn btn-sm" type="button" id="btn_close">
+				<i class="ace-icon fa fa-close bigger-110"></i>
+				关闭
+			</button>
+		</div>
+	</div>
+
+	
+	
+	<!-- 引入所需js -->
+	<link rel="stylesheet" href="${ctxPath}/static/zTree/css/zTreeStyle/zTreeStyle.css" />
+	<script src="${ctxPath}/static/zTree/js/jquery.ztree.core.js" type="text/javascript" ></script>
+	<script src="${ctxPath}/static/zTree/js/jquery.ztree.excheck.js" type="text/javascript"></script>
+@}	

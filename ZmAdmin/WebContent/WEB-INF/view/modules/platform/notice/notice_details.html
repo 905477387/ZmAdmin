@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>资讯详情</title>
+<style type="text/css">
+		
+	div{
+		padding: 10px;
+	}
+	#row1{
+		text-align:center;
+        font: bold 60px/1.5 "Microsoft Yahei";
+	}
+	#row2{
+        height: 60px;
+		font-size:2em;
+	}
+	#row3{
+        font-family: "Microsoft Yahei";
+        font-size: 18px;
+        line-height: 60px;
+	}
+</style>
+
+</head>
+<body style="">
+
+
+
+    <div class="row">
+        
+            <div id="row1">
+                <h3 style="
+">${notice.title}</h3>
+            </div>
+            <div id="row2">
+                    <span style="
+    float: left;
+    height: 60px;
+">来源：${user.name}</span> <span style="
+    float: right;
+    height: 60px;
+">${time}</span>
+            </div>
+ 
+            <div class="row">
+                <hr>
+            </div>
+            <div id="row3">${notice.content}</div>
+        </div>
+ 
+
+</body></html>
