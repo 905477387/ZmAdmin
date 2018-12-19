@@ -65,7 +65,7 @@ public class ICCardController extends BaseController {
 	@RequestMapping(KEY_VIEW + "/{id}")
 	public String view(@PathVariable String id, ModelMap mm) {
 		ICCard iCCard = service.findById(id);
-		mm.put("model", JsonKit.toJson(iCCard));
+		mm.put("model",JsonKit.toJson(iCCard));
 		mm.put("id", id);
 		mm.put("code", CODE);
 		return BASE_PATH + "iccard_view.html";
