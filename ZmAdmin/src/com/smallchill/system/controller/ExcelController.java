@@ -86,6 +86,11 @@ public class ExcelController extends BaseController {
             }
             where_ext = sb.toString();
         }
+        
+        //针对车辆管理模块的特殊处理
+        if(code.equalsIgnoreCase("iccard")) {
+        	where_ext += " and CardNo not in (SELECT CardNo from tb_charge_list where CustNo = #{CustNo} and (status = 1 or status = 3)) ";
+        }
 
         where_ext += " and CustNo = #{CustNo} ";
         
