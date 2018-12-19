@@ -3,6 +3,7 @@ package com.smallchill.system.controller;
 import com.smallchill.common.base.BaseController;
 import com.smallchill.core.annotation.Json;
 import com.smallchill.core.constant.ConstCache;
+import com.smallchill.core.constant.ConstShiro;
 import com.smallchill.core.plugins.dao.Db;
 import com.smallchill.core.plugins.dao.Md;
 import com.smallchill.core.shiro.ShiroKit;
@@ -92,7 +93,13 @@ public class ExcelController extends BaseController {
         	where_ext += " and CardNo not in (SELECT CardNo from tb_charge_list where CustNo = #{CustNo} and (status = 1 or status = 3)) ";
         }
 
-        where_ext += " and CustNo = #{CustNo} ";
+        if (ShiroKit.hasRole(ConstShiro.COMPANY)) {
+        	where_ext += " and CustNo = #{CustNo} ";
+        }
+        if (ShiroKit.hasRole(ConstShiro.STATION)) {
+        	where_ext += " and StationNo = #{StationNo} ";
+        }
+        
         
 		String sql = "select {} from (" + _source + ") a " + SqlKeyword.getWhere(where) + where_ext + orderby;
 
